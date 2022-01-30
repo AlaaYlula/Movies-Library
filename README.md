@@ -11,7 +11,7 @@
 ## Getting Started
 <!-- What are the steps that a user must take in order to build this app on their own machine and get it running? -->
 1. on terminal write npm start
-2. go to the URL and write localhost:3500/ or localhost:3500/favorite
+2. go to the browser and write localhost:3000/ or localhost:3000/favorite
 
 ## Project Features
 <!-- What are the features included in you app -->
