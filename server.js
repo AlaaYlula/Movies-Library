@@ -32,17 +32,26 @@ function handelHomePage(req,res){
 }
 
 function handelfavorite(req,res){
-    
+
     res.status(200).send("Welcome to Favorite Page ");
 
 }
 
 function handelNotFound(req,res){
 
+
     let obj = new Error(404,"Sorry, something went wrong,page not found error");
     res.status(404).send(obj)
+    
 }
+function handleNotServer(req,res)
+{
+    if (res.statusCode == 500){
 
+        let obj = new Error(500,"Sorry, something went wrong,Server error");
+        res.status(500).send(obj)
+        }
+}
 
 app.listen(3500, ()=>{
     console.log("listinig to port 3500");
