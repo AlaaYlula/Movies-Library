@@ -10,9 +10,10 @@ app.use(cors());
 
 app.get('/',handelHomePage);
 app.get('/favorite',handelfavorite);
+app.get('/error',handleNotServer)
+
 app.get('*',handelNotFound);
 
-app.get('/',handleNotServer)
 
 
 function Favorite(title,poster_path, overview){
@@ -49,10 +50,9 @@ function handelNotFound(req,res){
 function handleNotServer(req,res)
 {
     
-    if (res.statusCode == 500){
         let obj = new Error(500,"Sorry, something went wrong, Server error");
         res.status(500).send(obj)
-      }
+      
 }
 
  app.listen(3000, ()=>{
