@@ -5,7 +5,7 @@
 **Author Name**: Ala' Alwazani
 
 ## WRRC
-![WRRC App Task12](./images/task12.PNG)
+![WRRC App Task12](./images/Task12.PNG)
 ## Overview
 
 ## Getting Started
