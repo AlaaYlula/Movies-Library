@@ -1,27 +1,36 @@
 'use strict';
 
-require('dotenv').config(); // For the Kye and port#
+require('dotenv').config(); // For the Kye and port# & databaseName
 const PORT = process.env.PORT;
 
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios'); // Read From API
 
+const pg = require('pg'); // 1st
+
+//2nd create database
+
+const client = new pg.Client(process.env.DATABASE_URL); // 3rd 
+
+
 const app = express();
 app.use(cors());
-
+app.use(express.json()); // to parse the body content to JSON Format
 
 app.get('/trending',handelTrending);
 app.get('/search',handelSearch);
 app.get('/popular',handlePopular)
 app.get('/toprated',handleTopRated)
 
+
+app.post('/addMovie',handelAddMovie);  // Task13
+app.get('/getMovies',handleGetMovies);//Task13
 //app.get('/error',handleNotServer)
 
 app.use('*',handelNotFound);
 //app.use(errorHandler)
 
-let name="Riverdance";
 let url=`https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.APIKEY}&language=en-US`;
 
 function Trending(id,title,release_date, poster_path,overview){
@@ -52,7 +61,8 @@ function handelTrending(req,res){
 }
 
 function handelSearch(req,res){
-    
+   // let name="Riverdance";
+    let name = req.query.name;// take the movie name from user in URL as ?query=name
     let url=`https://api.themoviedb.org/3/search/movie?api_key=${process.env.APIKEY}&language=en-US&query=${name}`
     axios.get(url)
     .then(result=>{
@@ -94,6 +104,38 @@ function handleTopRated(req,res){
 
     })
 }
+///////////////////////// Task 13 
+// 5th create a table in database "moviesadded" >> file schema.sql
+//connect the table with data base : psql -d moviesadded -f schema.sql
+//Then : 
+function handelAddMovie(req,res){
+    let movie = req.body ; 
+    //console.log(req.body);
+  let sql = `INSERT INTO favMovies(title,release_date,vote_count,poster_path,overview,comments) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`
+  let values=[movie.title,movie.release_date,movie.vote_count,movie.poster_path,movie.overview,movie.comments];
+  client.query(sql,values).then(data =>{
+      res.status(200).json(data.rows);
+  }).catch(error=>{
+      errorHandler(error,req,res)
+  });
+
+}
+
+
+function handleGetMovies(req,res){
+
+    let sql = `SELECT * FROM favMovies;`;
+    client.query(sql).then(data=>{
+       res.status(200).json(data.rows);
+    }).catch(error=>{
+        errorHandler(error,req,res)
+    });
+}
+
+
+/////////////////////////
+
+///////////////////////// Errors Functions ///////////////////
 
 function handelNotFound(req,res){
 
@@ -108,10 +150,11 @@ function errorHandler(err,req,res) /// Handle 500 Eroor 500 /////
         res.status(500).send(obj)
       
 }
-
+////////////////////////////////// Server
+client.connect().then(()=>{ // 4th Connect to client
  app.listen(PORT, ()=>{
     console.log(`listinig to port ${PORT}`);
   
-}) 
-
+}) ;
+});
 
