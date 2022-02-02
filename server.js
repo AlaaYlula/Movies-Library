@@ -16,7 +16,7 @@ const client = new pg.Client(process.env.DATABASE_URL); // 3rd
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // to parse the body content to JSON Format
+app.use(express.json()); // to parse the body content to JSON Format, so not get notdefined error
 
 app.get('/trending',handelTrending);
 app.get('/search',handelSearch);
@@ -112,7 +112,7 @@ function handelAddMovie(req,res){
     let movie = req.body ; 
     //console.log(req.body);
   let sql = `INSERT INTO favMovies(title,release_date,vote_count,poster_path,overview,comments) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`
-  let values=[movie.title,movie.release_date,movie.vote_count,movie.poster_path,movie.overview,movie.comments];
+  let values=[movie.title || ' ',movie.release_date || ' ',movie.vote_count || 0 ,movie.poster_path || ' ',movie.overview || ' ',movie.comments || ' '];
   client.query(sql,values).then(data =>{
       res.status(200).json(data.rows);
   }).catch(error=>{
