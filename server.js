@@ -26,10 +26,14 @@ app.get('/toprated',handleTopRated)
 
 app.post('/addMovie',handelAddMovie);  // Task13
 app.get('/getMovies',handleGetMovies);//Task13
-//app.get('/error',handleNotServer)
 
+app.put('/UPDATE/:id',handelUpdateMovie);  // Task14
+app.delete('/DELETE/:id',handleDeleteMovie);//Task14
+app.get('/getMovie/:id',handleGetSpecificMovie);//Task14
+
+//app.get('/error',handleNotServer)
 app.use('*',handelNotFound);
-//app.use(errorHandler)
+app.use(errorHandler)
 
 let url=`https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.APIKEY}&language=en-US`;
 
@@ -134,7 +138,39 @@ function handleGetMovies(req,res){
 
 
 /////////////////////////
-
+///////////////////////// Task 14
+function handelUpdateMovie(req,res){
+    const id = req.params.id;
+    const movie = req.body;
+    const sql = `UPDATE favMovies SET title=$1,release_date=$2,vote_count=$3,poster_path=$4,overview=$5,comments=$6 WHERE id=$7 RETURNING *;`;
+    const values = [movie.title || ' ',movie.release_date || ' ',movie.vote_count || 0 ,movie.poster_path || ' ',movie.overview || ' ',movie.comments || ' ',id];
+    client.query(sql,values).then(data=>{
+        res.status(200).json(data.rows);
+    }).catch(error=>{
+        errorHandler(error,req,res);
+    });
+}
+function handleDeleteMovie(req,res){
+    const id = req.params.id;
+    const sql = `DELETE FROM favMovies WHERE id=$1 RETURNING *;`;
+    const values = [id];
+    client.query(sql,values).then(()=>{
+        res.status(204).json({});
+    }).catch(error=>{
+        errorHandler(error,req,res);
+    });
+}
+function handleGetSpecificMovie(req,res){
+    const id = req.params.id;
+    let sql = `SELECT * FROM favMovies WHERE id=$1;`;
+    let value = [id]
+    client.query(sql,value).then(data=>{
+       res.status(200).json(data.rows);
+    }).catch(error=>{
+        errorHandler(error,req,res)
+    });
+}
+/////////////////////////
 ///////////////////////// Errors Functions ///////////////////
 
 function handelNotFound(req,res){
