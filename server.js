@@ -187,10 +187,14 @@ function errorHandler(err,req,res) /// Handle 500 Eroor 500 /////
       
 }
 ////////////////////////////////// Server
-client.connect().then(()=>{ // 4th Connect to client
- app.listen(PORT, ()=>{
-    console.log(`listinig to port ${PORT}`);
+// client.connect().then(()=>{ // 4th Connect to client
+//  app.listen(PORT, ()=>{
+//     console.log(`listinig to port ${PORT}`);
   
-}) ;
+// }) ;
+// });
+const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
 });
 
