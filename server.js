@@ -54,7 +54,9 @@ function Trending(id,title,release_date, poster_path,overview){
      this.responseText = responseText
  }
  function handleHome(req,res){
-        res.status(200).send("Welcome, I am Ala' Alwazani :) ")
+        res.status(200).send("Welcome, I am Ala' Alwazani :) You Can Use These Routes /trending , /search , /popular , /toprated , /addMovie , /getMovies , /UPDATE/id , /DELETE/id , /getMovie/id ")
+
+        
  }
 
 function handelTrending(req,res){
