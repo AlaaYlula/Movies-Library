@@ -11,8 +11,11 @@ const pg = require('pg'); // 1st
 
 //2nd create database
 
-const client = new pg.Client(process.env.DATABASE_URL); // 3rd 
-
+//const client = new pg.Client(process.env.DATABASE_URL); // 3rd 
+const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
 
 const app = express();
 app.use(cors());
@@ -187,14 +190,10 @@ function errorHandler(err,req,res) /// Handle 500 Eroor 500 /////
       
 }
 ////////////////////////////////// Server
-// client.connect().then(()=>{ // 4th Connect to client
-//  app.listen(PORT, ()=>{
-//     console.log(`listinig to port ${PORT}`);
+client.connect().then(()=>{ // 4th Connect to client
+ app.listen(PORT, ()=>{
+    console.log(`listinig to port ${PORT}`);
   
-// }) ;
-// });
-const client = new pg.Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+}) ;
 });
 
