@@ -21,6 +21,7 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // to parse the body content to JSON Format, so not get notdefined error
 
+app.get('/',handleHome)
 app.get('/trending',handelTrending);
 app.get('/search',handelSearch);
 app.get('/popular',handlePopular)
@@ -51,6 +52,9 @@ function Trending(id,title,release_date, poster_path,overview){
  function Error(status,responseText){
      this.status = status ;
      this.responseText = responseText
+ }
+ function handleHome(req,res){
+        res.status(200).send("Welcome, I am Ala' Alwazani :) ")
  }
 
 function handelTrending(req,res){
